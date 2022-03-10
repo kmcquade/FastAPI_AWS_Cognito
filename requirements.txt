@@ -1,0 +1,6 @@
+pydantic
+fastapi
+aiohttp
+requests
+pyjwt
+python-jose[cryptography]
