@@ -2,12 +2,6 @@
 
 A helper module for attaching to a FastAPI app for user login using AWS Cognito.
 
-## Installation
-You can install with pip
-
-    pip install --extra-index-url http://pypi.bar.local --trusted-host pypi.bar.local AWSLoginHandler
-
-
 ## Usage
 To use add user login to a FastAPI app, simply create a manager and attach it to an app:
 
