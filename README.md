@@ -107,4 +107,4 @@ pre-commit install
 ### Todo
 
 * Implement authorization code flow
-* Make the flow stateful by storing parameters such as 'state' in a cookie or on a database/dictionary
+* Implement '/logout' and 'token/refresh' endpoints
