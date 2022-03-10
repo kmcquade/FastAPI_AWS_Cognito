@@ -107,4 +107,4 @@ pre-commit install
 ### Todo
 
 * Implement authorization code flow
-* Implement '/logout' and 'token/refresh' endpoints
+* Implement `/logout` and `/token/refresh` endpoints
