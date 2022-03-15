@@ -5,7 +5,7 @@ A helper module for attaching to a FastAPI app for user login using AWS Cognito.
 ## Usage
 To use add user login to a FastAPI app, simply create a manager and attach it to an app:
 
-```commandline
+```python
 from fastapi import FastAPI
 from AWSLoginHandler.flows.pkce.manager import PKCEManager
 
@@ -22,24 +22,50 @@ oauth_manager.attach_to_app(api)
 
 Then to allow a user to login, simply redirect the user to the `/login` endpoint. For example:
 
-```commandline
+```html
 <a href='{request.url_for('login_redirect')}'>Login</a>
 ```
 
 You can get the user information using dependancy injection on your endpoint:
 
-```commandline
+```python
 @api.get("/")
-async def homepage(request: Request, user_info=Depends(oauth_manager.get_user)):
+async def homepage(request: Request, user_info=Depends(oauth_manager.get_user_info_from(["cookie"], auto_error=False)):
     return user_info
 ```
 
-In addition, you can verify the users JWT token and get it's info using `get_users_token_payload`:
+You can use the `token_from` parameter in `get_user_info_from` to select where to retrieve the access token. For static websites, you
+most likely want to get the access token from the HTTP Only cookie stored after user log-in. For API endpoints, you most
+likely want to get the access token from the `Authorization: Bearer {access_token}` header passed to the api endpoint.
 
-```commandline
-@api.get("/payload")
-async def payload(request: Request, user_payload=Depends(oauth.get_user_token_payload)):
-    return user_payload
+An example return value of `get_user_info_from` is:
+
+```json
+{
+    "user_info": {
+        "sub": "b17603a3-00de-44b5-8422-2aea9b70b552", 
+        "email_verified": "true", 
+        "email": "mcleantom97@gmail.com", 
+        "username": "b17603a3-00de-44b5-8422-2aea9b70b552"
+    }, 
+    "token_payload": {
+        "sub": "b17603a3-00de-44b5-8422-2aea9b70b552", 
+        "cognito:groups": [
+            "bar_technologies"
+        ], 
+        "iss": "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_tMeCEUTj8", 
+        "version": 2, 
+        "client_id": "17gabj8fffsal3lfb393cv81kc", 
+        "origin_jti": "1aa2b8e4-885e-49df-92cf-43197d82fab5", 
+        "token_use": "access", 
+        "scope": "phone openid email", 
+        "auth_time": 1647343413, 
+        "exp": 1647347013, 
+        "iat": 1647343413, 
+        "jti": "02074223-c5f8-46de-8c06-2f74f587d858", 
+        "username": "b17603a3-00de-44b5-8422-2aea9b70b552"
+    }
+}
 ```
 
 See [the amazon docs](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-access-token.html) for more
@@ -100,5 +126,4 @@ pre-commit install
 
 ### Todo
 
-* Implement authorization code flow
-* Implement `/logout` and `/token/refresh` endpoints
+* Add `/logout` endpoint
